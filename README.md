@@ -1,4 +1,4 @@
-# fibergo-example
+# go-fiber-example
 This is an example api using Fibergo.
 
 /students
