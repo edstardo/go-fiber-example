@@ -2,6 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
+	"log"
+	"os"
+	"os/signal"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -23,7 +27,19 @@ func main() {
 		}
 	})
 
-	app.Listen(":3000")
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	go func() {
+		_ = <-c
+		fmt.Println("Gracefully shutting down...")
+		_ = app.Shutdown()
+	}()
+
+	if err := app.Listen(":3000"); err != nil {
+		log.Panic(err)
+	}
+
+	fmt.Println("Running cleanup tasks...")
 }
 
 type Student struct {
